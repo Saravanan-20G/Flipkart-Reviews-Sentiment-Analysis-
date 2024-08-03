@@ -1,15 +1,14 @@
 import streamlit as st
 import re
 import nltk
+import pandas as pd
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
-import pandas as pd
-
-# Assuming you have already loaded and preprocessed the data, trained the model, and created the word cloud
 
 # Load dataset
 df = pd.read_csv("C:\\Users\\Saravanan\\OneDrive\\Desktop\\ipl\\flipkart\\flipkart_data.csv")
@@ -41,9 +40,16 @@ cv = TfidfVectorizer(max_features=2500)
 X = cv.fit_transform(df['review']).toarray()
 y = df['label']
 
+# Split data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, stratify=y, random_state=42)
+
 # Train model
 model = DecisionTreeClassifier(random_state=0)
-model.fit(X, y)
+model.fit(X_train, y_train)
+
+# Evaluate model on test set
+test_pred = model.predict(X_test)
+test_accuracy = accuracy_score(y_test, test_pred)
 
 # Define Streamlit app
 st.title("Flipkart Review Sentiment Analysis")
@@ -62,10 +68,13 @@ if st.button("Predict Sentiment"):
     sentiment = "Positive" if prediction[0] == 1 else "Negative"
     st.write(f"The review sentiment is: {sentiment}")
 
-# Show the confusion matrix for the training data
-st.subheader("Confusion Matrix on Training Data")
-pred_train = model.predict(X)
-cm = confusion_matrix(y, pred_train)
+# Show model performance on test set
+st.subheader("Model Performance on Test Set")
+st.write(f"Accuracy: {test_accuracy:.2f}")
+
+# Show the confusion matrix for the test data
+st.subheader("Confusion Matrix on Test Data")
+cm = confusion_matrix(y_test, test_pred)
 cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[False, True])
 fig, ax = plt.subplots()
 cm_display.plot(ax=ax)
