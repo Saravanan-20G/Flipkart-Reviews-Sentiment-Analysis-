@@ -91,7 +91,14 @@ For any questions, feel free to reach out:
 - **GitHub**: [Your GitHub](https://github.com/yourusername/)
 
 ---
-
+Key Additions:
+Emojis for visual appeal.
+Section Headers for clear navigation.
+Detailed Instructions for installation and usage.
+Project Structure to give an overview of the files.
+Enhanced Visualizations Section to highlight what users can expect.
+Example to showcase how to use the app.
+Contributing and Contact Sections for community engagement and support.
 *This project was developed to demonstrate the capabilities of sentiment analysis using machine learning and interactive visualizations with Streamlit.*
 
 ![App Screenshot](screenshot.png)
